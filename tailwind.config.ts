@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Config } from "tailwindcss";
-import { default as flattenColorPalette } from "tailwindcss/lib/util/flattenColorPalette";
+import type { Config } from 'tailwindcss';
+import flattenColorPalette from 'tailwindcss/lib/util/flattenColorPalette';
 
 // This plugin adds each Tailwind color as a global CSS variable, e.g. var(--gray-200).
 function addVariablesForColors({ addBase, theme }: any) {
-  let allColors = flattenColorPalette(theme("colors"));
+  let allColors = flattenColorPalette(theme('colors'));
   let newVars = Object.fromEntries(
     Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
   );
 
   addBase({
-    ":root": newVars,
+    ':root': newVars,
   });
 }
 
 export default {
-  darkMode: ["class"],
+  darkMode: ['class'],
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -30,31 +30,31 @@ export default {
         foreground: 'hsl(var(--foreground))',
         card: {
           DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))'
+          foreground: 'hsl(var(--card-foreground))',
         },
         popover: {
           DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))'
+          foreground: 'hsl(var(--popover-foreground))',
         },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))'
+          foreground: 'hsl(var(--primary-foreground))',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))'
+          foreground: 'hsl(var(--secondary-foreground))',
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))'
+          foreground: 'hsl(var(--muted-foreground))',
         },
         accent: {
           DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))'
+          foreground: 'hsl(var(--accent-foreground))',
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))'
+          foreground: 'hsl(var(--destructive-foreground))',
         },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -64,28 +64,28 @@ export default {
           '2': 'hsl(var(--chart-2))',
           '3': 'hsl(var(--chart-3))',
           '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))'
-        }
+          '5': 'hsl(var(--chart-5))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)'
+        sm: 'calc(var(--radius) - 4px)',
       },
       animation: {
-        aurora: "aurora 60s linear infinite",
+        aurora: 'aurora 60s linear infinite',
       },
       keyframes: {
         aurora: {
           from: {
-            backgroundPosition: "50% 50%, 50% 50%",
+            backgroundPosition: '50% 50%, 50% 50%',
           },
           to: {
-            backgroundPosition: "350% 50%, 350% 50%",
+            backgroundPosition: '350% 50%, 350% 50%',
           },
         },
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), addVariablesForColors],
+  plugins: [require('tailwindcss-animate'), addVariablesForColors],
 } satisfies Config;

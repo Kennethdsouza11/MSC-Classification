@@ -28,6 +28,8 @@ export default function ImageUpload() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL 
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFiles(Array.from(e.target.files));
@@ -47,7 +49,7 @@ export default function ImageUpload() {
     setError(null);
 
     try {
-      const response = await axios.post('https://backend-ridlme1hn-kenneths-projects-55843bdf.vercel.app/predict', formData, {
+      const response = await axios.post(`${backendUrl}/predict`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setResults(response.data);

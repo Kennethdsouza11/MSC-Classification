@@ -15,7 +15,7 @@ import logging
 app = Flask(__name__)
 CORS(app, resources = {
     r"/predict":{
-        "origins": ["https://msc-classification.vercel.app"],
+        "origins": ["https://msc-classification-9d5mh58l1-kenneths-projects-55843bdf.vercel.app"],
         "methods": ["POST","OPTIONS"],
         "allow_headers": ["Content-Type"],
     }

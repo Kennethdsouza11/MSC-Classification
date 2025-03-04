@@ -13,9 +13,14 @@ import logging
 
 
 app = Flask(__name__)
+
+allowed_origins = [
+    "https://msc-classification-9d5mh58l1-kenneths-projects-55843bdf.vercel.app",
+    "http://localhost:3000"  # Add your local development URL
+]
 CORS(app, resources = {
     r"/predict":{
-        "origins": ["https://msc-classification-9d5mh58l1-kenneths-projects-55843bdf.vercel.app"],
+        "origins": allowed_origins,
         "methods": ["POST","OPTIONS"],
         "allow_headers": ["Content-Type"],
     }
@@ -39,7 +44,7 @@ model = tf.keras.Sequential([base_model, tf.keras.layers.GlobalAveragePooling2D(
 @app.route("/predict", methods=["OPTIONS"])
 def handle_preflight():
     response = jsonify({"message": "Preflight request handled"})
-    response.headers.add("Access-Control-Allow-Origin", "https://msc-classification-9d5mh58l1-kenneths-projects-55843bdf.vercel.app")
+    response.headers.add("Access-Control-Allow-Origin", "*")
     response.headers.add("Access-Control-Allow-Methods", "POST")
     response.headers.add("Access-Control-Allow-Headers", "Content-Type")
     return response

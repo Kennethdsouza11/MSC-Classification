@@ -47,7 +47,7 @@ export default function ImageUpload() {
     setError(null);
 
     try {
-      const response = await axios.post('http://localhost:5000/predict', formData, {
+      const response = await axios.post('https://backend-ridlme1hn-kenneths-projects-55843bdf.vercel.app/predict', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setResults(response.data);

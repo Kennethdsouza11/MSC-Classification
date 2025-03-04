@@ -6,25 +6,27 @@ from tensorflow.keras.applications import InceptionV3
 from sklearn.preprocessing import StandardScaler
 import joblib
 import os
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import base64
 import tempfile
 import logging
 
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config["CORS_HEADERS"] = "Content-Type"
 
 allowed_origins = [
     "https://msc-classification-9d5mh58l1-kenneths-projects-55843bdf.vercel.app",
     "http://localhost:3000"  # Add your local development URL
 ]
-CORS(app, resources = {
-    r"/predict":{
-        "origins": allowed_origins,
-        "methods": ["POST","OPTIONS"],
-        "allow_headers": ["Content-Type"],
-    }
-})
+# CORS(app, resources = {
+#     r"/predict":{
+#         "origins": "*",
+#         "methods": ["POST","OPTIONS"],
+#         "allow_headers": ["Content-Type"],
+#     }
+# })
 logging.basicConfig(level=logging.DEBUG)
 
 # Load the trained SVM models and scalers
@@ -89,6 +91,7 @@ def save_temp_image(image, label):
 
 
 @app.route("/predict", methods=["POST"])
+@cross_origin()
 def predict_images():
     if "files" not in request.files:
         return jsonify({"error": "No files uploaded"}), 400

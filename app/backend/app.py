@@ -13,34 +13,30 @@ import logging
 
 
 app = Flask(__name__)
-cors = CORS(app,resources={
-    r"/predict": {
-        "origins": ["https://msc-classification-9d5mh58l1-kenneths-projects-55843bdf.vercel.app", "http://localhost:3000"],
-        "methods": ["POST", "OPTIONS"],
-        "allow_headers": ["Content-Type"]
-    }
-})
+# Allow specific origins
+allowed_origins = [
+    "https://msc-classification.vercel.app",  # Your frontend URL
+    "http://localhost:3000",  # Local development URL
+]
+cors = CORS(
+    app,
+    resources={
+        r"/predict": {
+            "origins": allowed_origins,
+            "methods": ["POST", "OPTIONS"],
+            "allow_headers": ["Content-Type"],
+        }
+    },
+)
+
 
 @app.route("/predict", methods=["OPTIONS"])
 def handle_preflight():
     response = jsonify({"message": "Preflight request handled"})
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add("Access-Control-Allow-Methods", "POST")
+    response.headers.add("Access-Control-Allow-Origin", ", ".join(allowed_origins))
+    response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
     response.headers.add("Access-Control-Allow-Headers", "Content-Type")
     return response
-
-
-# allowed_origins = [
-#     "https://msc-classification-9d5mh58l1-kenneths-projects-55843bdf.vercel.app",
-#     "http://localhost:3000"  # Add your local development URL
-# CORS(app, resources = {
-#     r"/predict":{
-#         "origins": "*",
-#         "methods": ["POST","OPTIONS"],
-#         "allow_headers": ["Content-Type"],
-#     }
-# })
-
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -118,14 +114,23 @@ def predict_images():
 
     for file in files:
         try:
-            image = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_GRAYSCALE)
+            image = cv2.imdecode(
+                np.frombuffer(file.read(), np.uint8), cv2.IMREAD_GRAYSCALE
+            )
             if image is None:
-                results.append({"filename": file.filename, "error": "Could not read image"})
+                results.append(
+                    {"filename": file.filename, "error": "Could not read image"}
+                )
                 continue
 
             processed_image = preprocess_image(image)
             singlet_aggregate_label = predict_singlet_aggregate(processed_image)
-            results.append({"filename": file.filename, "singlet_aggregate_label": singlet_aggregate_label})
+            results.append(
+                {
+                    "filename": file.filename,
+                    "singlet_aggregate_label": singlet_aggregate_label,
+                }
+            )
 
             # Save the image temporarily and store its path
             temp_image_path = save_temp_image(image, singlet_aggregate_label)
@@ -155,7 +160,9 @@ def predict_images():
     live_percentage = (live_count / total_images) * 100 if total_images > 0 else 0
     dead_percentage = (dead_count / total_images) * 100 if total_images > 0 else 0
     singlet_percentage = (singlet_count / total_images) * 100 if total_images > 0 else 0
-    aggregate_percentage = (aggregate_count / total_images) * 100 if total_images > 0 else 0
+    aggregate_percentage = (
+        (aggregate_count / total_images) * 100 if total_images > 0 else 0
+    )
 
     # Convert images to base64 for frontend display
     def encode_image_to_base64(image_path):

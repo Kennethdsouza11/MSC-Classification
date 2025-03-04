@@ -16,7 +16,7 @@ app = Flask(__name__)
 CORS(app, resources = {
     r"/predict":{
         "origins": ["https://msc-classification.vercel.app"],
-        "methods": ["POST"],
+        "methods": ["POST","OPTIONS"],
         "allow_headers": ["Content-Type"],
     }
 })
@@ -39,7 +39,7 @@ model = tf.keras.Sequential([base_model, tf.keras.layers.GlobalAveragePooling2D(
 @app.route("/predict", methods=["OPTIONS"])
 def handle_preflight():
     response = jsonify({"message": "Preflight request handled"})
-    response.headers.add("Access-Control-Allow-Origin", "https://msc-classification.vercel.app")
+    response.headers.add("Access-Control-Allow-Origin", "https://msc-classification-9d5mh58l1-kenneths-projects-55843bdf.vercel.app")
     response.headers.add("Access-Control-Allow-Methods", "POST")
     response.headers.add("Access-Control-Allow-Headers", "Content-Type")
     return response

@@ -13,13 +13,26 @@ import logging
 
 
 app = Flask(__name__)
-cors = CORS(app)
-app.config["CORS_HEADERS"] = "Content-Type"
+cors = CORS(app,resources={
+    r"/predict": {
+        "origins": ["https://msc-classification-9d5mh58l1-kenneths-projects-55843bdf.vercel.app", "http://localhost:3000"],
+        "methods": ["POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 
-allowed_origins = [
-    "https://msc-classification-9d5mh58l1-kenneths-projects-55843bdf.vercel.app",
-    "http://localhost:3000"  # Add your local development URL
-]
+@app.route("/predict", methods=["OPTIONS"])
+def handle_preflight():
+    response = jsonify({"message": "Preflight request handled"})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Methods", "POST")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type")
+    return response
+
+
+# allowed_origins = [
+#     "https://msc-classification-9d5mh58l1-kenneths-projects-55843bdf.vercel.app",
+#     "http://localhost:3000"  # Add your local development URL
 # CORS(app, resources = {
 #     r"/predict":{
 #         "origins": "*",
@@ -27,6 +40,8 @@ allowed_origins = [
 #         "allow_headers": ["Content-Type"],
 #     }
 # })
+
+
 logging.basicConfig(level=logging.DEBUG)
 
 # Load the trained SVM models and scalers
@@ -43,13 +58,7 @@ base_model = InceptionV3(
 model = tf.keras.Sequential([base_model, tf.keras.layers.GlobalAveragePooling2D()])
 
 # Preflight request handler
-@app.route("/predict", methods=["OPTIONS"])
-def handle_preflight():
-    response = jsonify({"message": "Preflight request handled"})
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add("Access-Control-Allow-Methods", "POST")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type")
-    return response
+
 
 def preprocess_image(image):
     """Preprocess the uploaded image."""

@@ -1,0 +1,14 @@
+{
+    "version": 2,
+    "routes": [
+      {
+        "src": "/api/(.*)",
+        "headers": {
+          "Access-Control-Allow-Origin": "https://msc-classification.vercel.app",
+          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type"
+        }
+      }
+    ]
+  }
+  

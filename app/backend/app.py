@@ -9,9 +9,18 @@ import os
 from flask_cors import CORS
 import base64
 import tempfile
+import logging
+
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources = {
+    r"/predict":{
+        "origins": ["https://msc-classification.vercel.app"],
+        "methods": ["POST"],
+        "allow_headers": ["Content-Type"],
+    }
+})
+logging.basicConfig(level=logging.DEBUG)
 
 # Load the trained SVM models and scalers
 svm_model = joblib.load("svm_model.pkl")
@@ -26,6 +35,14 @@ base_model = InceptionV3(
 )
 model = tf.keras.Sequential([base_model, tf.keras.layers.GlobalAveragePooling2D()])
 
+# Preflight request handler
+@app.route("/predict", methods=["OPTIONS"])
+def handle_preflight():
+    response = jsonify({"message": "Preflight request handled"})
+    response.headers.add("Access-Control-Allow-Origin", "https://msc-classification.vercel.app")
+    response.headers.add("Access-Control-Allow-Methods", "POST")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type")
+    return response
 
 def preprocess_image(image):
     """Preprocess the uploaded image."""

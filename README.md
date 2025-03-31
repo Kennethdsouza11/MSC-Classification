@@ -9,6 +9,6 @@ cd app/backend
 python app.py
 ```
 Then click on the link 
-msc-classification.vercel.app
+(https://msc-classification.vercel.app/)
 
 
